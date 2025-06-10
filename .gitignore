@@ -1,0 +1,108 @@
+## Ignore Visual Studio temporary files, build results, and
+## user-specific files
+
+ansible
+Dockerfile
+Jenkinsfile
+README.md
+
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Bb]uilds/
+*.dll
+*.exe
+*.log
+*.appx
+*.appxupload
+*.vsix
+*.nupkg
+*.snupkg
+*.msi
+*.userosscache
+*.suo
+*.sdf
+*.cache
+*.dbmdl
+*.bak
+*.orig
+
+# NuGet packages
+packages/
+*.nupkg
+*.snupkg
+# NuGet v3 global-packages folder
+~/.nuget/packages/
+# Project-specific package folder
+**/packages/*
+
+# DotCover
+.idea/
+*.dotCover
+
+# User-specific files
+*.user
+*.userprefs
+*.suo
+*.userosscache
+*.sln.docstates
+*.vspscc
+*.vssscc
+
+# Visual Studio
+.vs/
+.vscode/
+
+# Rider
+.idea/
+
+# Web projects
+wwwroot/
+node_modules/
+bower_components/
+jspm_packages/
+
+# Logs
+*.log
+logs/
+log/
+*.tlog
+
+# Test results
+*.trx
+*.coverage
+*.coveragexml
+TestResults/
+TestResult.xml
+
+# Publish outputs
+publish/
+*.Publish.xml
+*.pubxml
+*.publishproj
+
+# Database
+*.mdf
+*.ldf
+
+# Windows image thumbnails
+Thumbs.db
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Others
+*.tmp
+*.bak
+*.swp
+*.pidb
+*.pid
+*.tmp
+*.DS_Store
