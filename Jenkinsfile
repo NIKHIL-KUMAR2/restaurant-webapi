@@ -5,12 +5,13 @@ pipeline {
         NUGET = 'C:\\Tools\\nuget\\nuget.exe'
         MSBUILD = '"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe"'
         DB_PORT = 5432
+        GITHUB_CREDENTIALS = credentials('github_pat_nikhil')
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: "${env.BRANCH}", url: 'https://github.com/NIKHIL-KUMAR2/restaurant-webapi.git'
+                git branch: "${env.BRANCH}", url: "https://${GITHUB_CREDENTIALS}@github.com/NIKHIL-KUMAR2/restaurant-webapi.git"
             }
         }
 
