@@ -1,0 +1,55 @@
+- name: Deploy app from GitHub to IIS on Windows
+  hosts: windows
+  gather_facts: no
+  vars:
+    app_name: restaurant-manager
+    app_port: 80
+    deployment_files : /workspace/Restaurant-WebAPI/obj/Release/Package/PackageTmp/
+    website_root: C:\inetpub\restaurant-manager
+    app_pool_name: "{{ app_name }}_AppPool"
+
+  tasks:
+    - name: Ensure Default Web Site is removed
+      win_iis_website:
+        name: "Default Web Site"
+        state: absent
+      ignore_errors: yes
+
+    - name: Ensure website root directory exists
+      win_file:
+        path: "{{ website_root }}"
+        state: directory
+    
+    - name: Ensure logs directory exists
+      win_file:
+        path: C:\logs\restaurant-manager
+        state: directory
+
+    - name: Copy deployment files to website root directory
+      win_copy:
+        src: "{{ deployment_files }}"
+        dest: "{{ website_root }}"
+        recurse: yes
+
+    - name: Create or update IIS Application Pool for the app
+      win_iis_webapppool:
+        name: "{{ app_pool_name }}"
+        state: started
+        managed_runtime_version: "v4.0"
+        pipeline_mode: Integrated
+        identity_type: ApplicationPoolIdentity
+
+    - name: Create or update IIS website
+      win_iis_website:
+        name: "{{ app_name }}"
+        state: started
+        port: "{{ app_port }}"
+        physical_path: "{{ website_root }}"
+        application_pool: "{{ app_pool_name }}"
+        hostname: ""
+
+    - name: Ensure IIS service is running
+      win_service:
+        name: W3SVC
+        start_mode: auto
+        state: started

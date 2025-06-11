@@ -1,0 +1,29 @@
+- name: Install IIS and components on Windows
+  hosts: windows
+  gather_facts: no
+
+  tasks:
+    - name: Install IIS base feature with management tools
+      win_feature:
+        name: Web-Server
+        include_management_tools: yes
+        state: present
+
+    - name: Install additional IIS features
+      win_feature:
+        name:
+          - Web-Asp-Net45
+          - Web-Mgmt-Console
+          - Web-Http-Redirect
+          - Web-Http-Tracing
+          - Web-Request-Monitor
+          - Web-Http-Errors
+          - Web-App-Dev
+          - Web-Net-Ext45
+        state: present
+
+    - name: Start the IIS service (W3SVC)
+      win_service:
+        name: W3SVC
+        start_mode: auto
+        state: started

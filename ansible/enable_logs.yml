@@ -1,0 +1,41 @@
+- name: Install and configure CloudWatch Agent on Windows EC2
+  hosts: windows
+  gather_facts: false
+  vars:
+    cloudwatch_agent_url: "https://s3.amazonaws.com/amazoncloudwatch-agent/windows/amd64/latest/amazon-cloudwatch-agent.msi"
+    cloudwatch_agent_installer: "C:\\Temp\\amazon-cloudwatch-agent.msi"
+    cloudwatch_agent_config_path: "C:\\ProgramData\\Amazon\\AmazonCloudWatchAgent\\config.json"
+    cloudwatch_agent_ctl: "C:\\Program Files\\Amazon\\AmazonCloudWatchAgent\\amazon-cloudwatch-agent-ctl.ps1"
+
+  tasks:
+    - name: Ensure Temp directory exists
+      win_file:
+        path: "C:\\Temp"
+        state: directory
+
+    - name: Download CloudWatch Agent MSI
+      win_get_url:
+        url: "{{ cloudwatch_agent_url }}"
+        dest: "{{ cloudwatch_agent_installer }}"
+
+    - name: Install CloudWatch Agent
+      win_package:
+        path: "{{ cloudwatch_agent_installer }}"
+        state: present
+
+    - name: Upload CloudWatch Agent config file
+      win_copy:
+        src: /home/ansible/config.json
+        dest: "{{ cloudwatch_agent_config_path }}"
+
+    - name: Configure CloudWatch Agent
+      win_shell: >
+        & "{{ cloudwatch_agent_ctl }}" -a fetch-config -m ec2 -c file:"{{ cloudwatch_agent_config_path }}"
+      args:
+        executable: powershell
+
+    - name: Ensure CloudWatch Agent service is running
+      win_service:
+        name: AmazonCloudWatchAgent
+        start_mode: auto
+        state: started

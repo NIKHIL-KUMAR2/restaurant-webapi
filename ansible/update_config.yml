@@ -1,0 +1,32 @@
+- name: Config connection string
+  hosts: windows
+  gather_facts: no
+  vars:
+    website_root: C:\inetpub\restaurant-manager
+    web_config_path: "{{website_root}}\\Web.config"
+    app_pool_name: "{{ app_name }}_AppPool"
+    db_host: "{{ lookup('env', 'DB_HOST') }}"
+    db_name: "{{ lookup('env', 'DB_NAME') }}"
+    db_username: "{{ lookup('env', 'DB_USERNAME') }}"
+    db_password: "{{ lookup('env', 'DB_PASSWORD') }}"
+    db_port: "{{ lookup('env', 'DB_PORT') }}"
+    connection_string: "Host={{ db_host }};Port={{ db_port }};Database={{ db_name }};Username={{ db_username }};Password={{ db_password }};"
+
+  tasks:
+    - name: Update connectionString attribute in Web.config file
+      community.windows.win_xml:
+        path: "{{ web_config_path }}"
+        xpath: "/configuration/connectionStrings/add[@name='MyDbConnection']"
+        type: attribute
+        attribute: 'connectionString'
+        state: present
+        fragment: "{{ connection_string }}"
+
+    - name: Update providerName attribute in Web.config file
+      community.windows.win_xml:
+        path: "{{ web_config_path }}"
+        xpath: "/configuration/connectionStrings/add[@name='MyDbConnection']"
+        type: attribute
+        attribute: 'providerName'
+        state: present
+        fragment: 'Npgsql'
