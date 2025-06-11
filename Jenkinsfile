@@ -10,9 +10,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                withCredentials([string(credentialsId: 'github_pat_nikhil', variable: 'GITHUB_TOKEN')]) {
-                    git branch: "${env.BRANCH}", url: "https://${GITHUB_TOKEN}@github.com/NIKHIL-KUMAR2/restaurant-webapi.git"
-                }
+                    git branch: "${env.BRANCH}", url: "https://github.com/NIKHIL-KUMAR2/restaurant-webapi.git"
             }
         }
 
