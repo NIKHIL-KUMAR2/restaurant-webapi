@@ -1,5 +1,5 @@
 pipeline {
-    agent {label 'windows-build-server'}
+    agent { label 'windows-build-server' }
 
     environment {
         NUGET = 'C:\\Tools\\nuget\\nuget.exe'
@@ -37,6 +37,11 @@ pipeline {
                                 bat "${MSBUILD} Restaurant-WebAPI.sln -p:DeployOnBuild=true -p:Configuration=Release"
                             }
                         }
+                        stage('Archive Artifacts') {
+                            steps {
+                                archiveArtifacts artifacts: '**/Restaurant-WebAPI/obj/Release/Package/PackageTmp/**', allowEmptyArchive: false
+                            }
+                        }
                     }
                 }
             }
@@ -49,13 +54,13 @@ pipeline {
                     def fetchVarsAndCreateEnv = { envStage ->
                         withAWSParameterStore(
                             credentialsId: 'aws_credential',
-                            naming: "relative",
+                            naming: 'relative',
                             path: "/restaurant-manager/${envStage}",
                             recursive: true,
                             regionName: 'ap-south-1'
                         ) {
                             if (!env.APP_IP?.trim() || !env.APP_PASSWORD?.trim() || !env.RDS_ENDPOINT?.trim() || !env.RDS_PASSWORD?.trim()) {
-                                error("Missing required environment variables")
+                                error('Missing required environment variables')
                             }
 
                             writeFile file: '.env', text: """
