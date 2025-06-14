@@ -54,7 +54,7 @@ pipeline {
                         withAWSParameterStore(
                             credentialsId: 'aws_credential',
                             naming: 'relative',
-                            path: "/restaurant-manager/${envStage}",
+                            path: "/rm/${envStage}",
                             recursive: true,
                             regionName: 'ap-south-1'
                         ) {
